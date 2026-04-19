@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Application — NIT Kurukshetra Hostel</title>
+    <meta name="description" content="Submit your hostel leave application online. NIT Kurukshetra Hostel leave management system.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="page-body" style="align-items: flex-start; padding-top: 40px; padding-bottom: 40px;">
+
+    <a href="index.html" class="back-link" id="backLink">← Back to Home</a>
+
+    <div class="form-card" style="max-width: 600px;">
+        <div style="text-align:center; margin-bottom: 12px;">
+            <span style="font-size: 2.8rem;">📋</span>
+        </div>
+        <h1>Leave Application</h1>
+        <p class="form-subtitle">Fill in the details below to submit your hostel leave request</p>
+
+        <form id="leaveForm">
+            <fieldset style="border:none; padding:0; margin:0;">
+
+                <!-- Student Name -->
+                <div class="form-group">
+                    <label for="studentName">Student Name</label>
+                    <input type="text" id="studentName" placeholder="Enter your full name" autocomplete="off" required>
+                </div>
+
+                <!-- Student ID & Email -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentId">Student ID / Roll No.</label>
+                        <input type="text" id="studentId" placeholder="e.g. 12345678" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="studentEmail">Email</label>
+                        <input type="email" id="studentEmail" placeholder="your@email.com" required>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="form-group">
+                    <label for="studentPhone">Phone Number</label>
+                    <input type="tel" id="studentPhone" placeholder="Enter your phone number" required>
+                </div>
+
+                <!-- Leave Dates -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="leaveStart">Leave Start Date</label>
+                        <input type="date" id="leaveStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="leaveEnd">Leave End Date</label>
+                        <input type="date" id="leaveEnd" required>
+                    </div>
+                </div>
+
+                <!-- Date duration display -->
+                <div id="durationDisplay" class="duration-badge" style="display:none;">
+                    <span id="durationText"></span>
+                </div>
+
+                <!-- Reason for Leave (Radio) -->
+                <div class="form-group">
+                    <label>Reason for Leave</label>
+                    <div class="form-options">
+                        <label class="form-option">
+                            <input type="radio" name="leaveReason" value="Medical" required> Medical
+                        </label>
+                        <label class="form-option">
+                            <input type="radio" name="leaveReason" value="Urgent Work"> Urgent Work
+                        </label>
+                        <label class="form-option">
+                            <input type="radio" name="leaveReason" value="Family Function"> Family Function
+                        </label>
+                        <label class="form-option">
+                            <input type="radio" name="leaveReason" value="Others"> Others
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Detailed Reason -->
+                <div class="form-group">
+                    <label for="leaveDetails">Detailed Reason</label>
+                    <textarea id="leaveDetails" placeholder="Describe the reason for your leave..." required></textarea>
+                </div>
+
+                <!-- Destination (Checkboxes) -->
+                <div class="form-group">
+                    <label>Destination</label>
+                    <div class="form-options">
+                        <label class="form-option">
+                            <input type="checkbox" name="destination" value="Chandigarh"> Chandigarh
+                        </label>
+                        <label class="form-option">
+                            <input type="checkbox" name="destination" value="Shimla"> Shimla
+                        </label>
+                        <label class="form-option">
+                            <input type="checkbox" name="destination" value="Dharamshala"> Dharamshala
+                        </label>
+                        <label class="form-option">
+                            <input type="checkbox" name="destination" value="Manali"> Manali
+                        </label>
+                        <label class="form-option">
+                            <input type="checkbox" name="destination" value="Home"> Home
+                        </label>
+                        <label class="form-option">
+                            <input type="checkbox" name="destination" value="Others"> Others
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="form-group">
+                    <label for="emergencyContact">Emergency Contact</label>
+                    <select id="emergencyContact" required>
+                        <option value="" disabled selected>Select emergency contact</option>
+                        <option value="Parent">Parent (9792145682)</option>
+                        <option value="Friend">Friend (1234567890)</option>
+                        <option value="Rishabh">Rishabh (123456789)</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="form-btn" id="leaveSubmitBtn">
+                    Submit Leave Application
+                </button>
+
+                <div class="form-footer">
+                    <a href="login.html">Login</a> &nbsp;|&nbsp; <a href="index.html">Home</a>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+
+    <!-- Leave Summary Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>✅ Leave Application Submitted</h2>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Filled by JS -->
+            </div>
+            <div class="modal-actions">
+                <button class="form-btn" onclick="closeModal()" style="max-width: 200px; margin: 0 auto;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .duration-badge {
+            background: rgba(79, 70, 229, 0.06);
+            color: #4f46e5;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 16px;
+            margin-top: -8px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: #fff;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            padding: 36px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .modal-body {
+            font-size: 0.92rem;
+            line-height: 1.8;
+            color: #475569;
+        }
+
+        .modal-body .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .modal-body .summary-row strong {
+            color: #1e293b;
+            min-width: 140px;
+        }
+
+        .modal-actions {
+            margin-top: 24px;
+            text-align: center;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+    </style>
+
+    <script>
+        // ── Auto-calculate leave duration ──
+        const leaveStart = document.getElementById('leaveStart');
+        const leaveEnd = document.getElementById('leaveEnd');
+        const durationDisplay = document.getElementById('durationDisplay');
+        const durationText = document.getElementById('durationText');
+
+        // Set minimum dates
+        const today = new Date().toISOString().split('T')[0];
+        leaveStart.setAttribute('min', today);
+
+        function calcDuration() {
+            if (leaveStart.value && leaveEnd.value) {
+                const start = new Date(leaveStart.value);
+                const end = new Date(leaveEnd.value);
+                const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+
+                if (diff > 0) {
+                    durationDisplay.style.display = 'inline-block';
+                    durationText.textContent = '📅 Leave Duration: ' + diff + ' day' + (diff > 1 ? 's' : '');
+                } else if (diff === 0) {
+                    durationDisplay.style.display = 'inline-block';
+                    durationText.textContent = '📅 Leave Duration: Same day';
+                } else {
+                    durationDisplay.style.display = 'inline-block';
+                    durationText.textContent = '⚠️ End date must be after start date';
+                    durationDisplay.style.color = '#ef4444';
+                }
+            } else {
+                durationDisplay.style.display = 'none';
+            }
+        }
+
+        leaveStart.addEventListener('change', () => {
+            leaveEnd.setAttribute('min', leaveStart.value);
+            calcDuration();
+        });
+        leaveEnd.addEventListener('change', calcDuration);
+
+        // ── Form Submit ──
+        document.getElementById('leaveForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('studentName').value.trim();
+            const id = document.getElementById('studentId').value.trim();
+            const email = document.getElementById('studentEmail').value.trim();
+            const phone = document.getElementById('studentPhone').value.trim();
+            const startDate = leaveStart.value;
+            const endDate = leaveEnd.value;
+            const details = document.getElementById('leaveDetails').value.trim();
+            const contact = document.getElementById('emergencyContact').value;
+
+            // Get selected leave reason
+            const reasonRadio = document.querySelector('input[name="leaveReason"]:checked');
+            const reason = reasonRadio ? reasonRadio.value : '';
+
+            // Get selected destinations
+            const destCheckboxes = document.querySelectorAll('input[name="destination"]:checked');
+            const destinations = Array.from(destCheckboxes).map(cb => cb.value).join(', ');
+
+            // Validation
+            if (!name || !id || !email || !phone || !startDate || !endDate || !reason || !details || !contact) {
+                showToast('Please fill in all required fields.', 'error');
+                return;
+            }
+
+            if (new Date(endDate) < new Date(startDate)) {
+                showToast('End date must be after start date.', 'error');
+                return;
+            }
+
+            // Calculate duration
+            const diff = Math.ceil((new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24));
+            const durationStr = diff === 0 ? 'Same day' : diff + ' day' + (diff > 1 ? 's' : '');
+
+            // Show summary modal
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div class="summary-row"><strong>Name</strong><span>${name}</span></div>
+                <div class="summary-row"><strong>Student ID</strong><span>${id}</span></div>
+                <div class="summary-row"><strong>Email</strong><span>${email}</span></div>
+                <div class="summary-row"><strong>Phone</strong><span>${phone}</span></div>
+                <div class="summary-row"><strong>Leave Dates</strong><span>${formatDate(startDate)} — ${formatDate(endDate)}</span></div>
+                <div class="summary-row"><strong>Duration</strong><span>${durationStr}</span></div>
+                <div class="summary-row"><strong>Reason</strong><span>${reason}</span></div>
+                <div class="summary-row"><strong>Details</strong><span>${details}</span></div>
+                <div class="summary-row"><strong>Destination</strong><span>${destinations || 'Not specified'}</span></div>
+                <div class="summary-row"><strong>Emergency Contact</strong><span>${contact}</span></div>
+            `;
+
+            document.getElementById('modalOverlay').classList.add('active');
+        });
+
+        function formatDate(dateStr) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            showToast('✅ Leave application submitted successfully!', 'success');
+            document.getElementById('leaveForm').reset();
+            durationDisplay.style.display = 'none';
+        }
+
+        // Toast notification
+        function showToast(message, type) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

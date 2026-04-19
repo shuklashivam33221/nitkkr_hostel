@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up — NIT Kurukshetra Hostel</title>
+    <meta name="description" content="Create your NIT Kurukshetra Hostel portal account to access hostel services and leave applications.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="page-body">
+
+    <a href="index.html" class="back-link" id="backLink">← Back to Home</a>
+
+    <div class="form-card">
+        <div style="text-align:center; margin-bottom: 12px;">
+            <span style="font-size: 2.8rem;">📝</span>
+        </div>
+        <h1>Create Account</h1>
+        <p class="form-subtitle">Register for your hostel portal access</p>
+
+        <form id="signupForm">
+
+            <div class="form-group">
+                <label for="signupName">Full Name</label>
+                <input type="text" id="signupName" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="signupEmail">Email Address</label>
+                <input type="email" id="signupEmail" placeholder="Enter your email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="signupPhone">Phone Number</label>
+                <input type="tel" id="signupPhone" placeholder="Enter your phone number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="signupRoll">Roll Number</label>
+                <input type="text" id="signupRoll" placeholder="e.g. 12345678" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" placeholder="Min 6 characters" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" placeholder="Re-enter password" minlength="6" required>
+                </div>
+            </div>
+
+            <!-- Password strength indicator -->
+            <div class="password-strength" id="passwordStrength">
+                <div class="strength-bar">
+                    <div class="strength-fill" id="strengthFill"></div>
+                </div>
+                <span class="strength-text" id="strengthText"></span>
+            </div>
+
+            <button type="submit" class="form-btn" id="signupBtn">Create Account</button>
+
+            <div class="form-footer">
+                Already have an account? <a href="login.html">Login</a>
+            </div>
+        </form>
+    </div>
+
+    <style>
+        .password-strength {
+            margin-top: -8px;
+            margin-bottom: 16px;
+        }
+
+        .strength-bar {
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 4px;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+
+        .strength-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+    </style>
+
+    <script>
+        // ── Password Strength Meter ──
+        const passwordInput = document.getElementById('signupPassword');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+
+        passwordInput.addEventListener('input', () => {
+            const val = passwordInput.value;
+            let score = 0;
+
+            if (val.length >= 6) score++;
+            if (val.length >= 10) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+
+            const levels = [
+                { width: '0%', color: '#e2e8f0', text: '' },
+                { width: '20%', color: '#ef4444', text: 'Very Weak' },
+                { width: '40%', color: '#f97316', text: 'Weak' },
+                { width: '60%', color: '#eab308', text: 'Fair' },
+                { width: '80%', color: '#22c55e', text: 'Strong' },
+                { width: '100%', color: '#10b981', text: 'Very Strong' },
+            ];
+
+            const level = levels[score];
+            strengthFill.style.width = level.width;
+            strengthFill.style.background = level.color;
+            strengthText.textContent = level.text;
+            strengthText.style.color = level.color;
+        });
+
+        // ── Form Validation ──
+        document.getElementById('signupForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const phone = document.getElementById('signupPhone').value.trim();
+            const roll = document.getElementById('signupRoll').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('signupConfirmPassword').value;
+
+            // Validate all fields
+            if (!name || !email || !phone || !roll || !password || !confirmPassword) {
+                showToast('Please fill in all fields.', 'error');
+                return;
+            }
+
+            // Validate email format
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                showToast('Please enter a valid email address.', 'error');
+                return;
+            }
+
+            // Validate phone (10 digits)
+            const phoneClean = phone.replace(/\D/g, '');
+            if (phoneClean.length < 10) {
+                showToast('Please enter a valid phone number.', 'error');
+                return;
+            }
+
+            // Validate password match
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match!', 'error');
+                const card = document.querySelector('.form-card');
+                card.style.animation = 'none';
+                card.offsetHeight;
+                card.style.animation = 'shake 0.5s ease';
+                return;
+            }
+
+            // Success
+            showToast('✅ Account created successfully!', 'success');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1500);
+        });
+
+        // Toast notification
+        function showToast(message, type) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

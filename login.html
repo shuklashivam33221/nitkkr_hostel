@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — NIT Kurukshetra Hostel</title>
+    <meta name="description" content="Login to NIT Kurukshetra Hostel portal to access leave forms, fee details, and hostel services.">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+
+<body class="page-body">
+
+    <a href="index.html" class="back-link" id="backLink">← Back to Home</a>
+
+    <div class="form-card">
+        <div style="text-align:center; margin-bottom: 12px;">
+            <span style="font-size: 2.8rem;">🏛️</span>
+        </div>
+        <h1>Welcome Back</h1>
+        <p class="form-subtitle">Login to your hostel portal account</p>
+
+        <form id="loginForm" action="index.html">
+
+            <div class="form-group">
+                <label for="loginUsername">Username</label>
+                <input type="text" id="loginUsername" placeholder="Enter your username" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Enter your password" minlength="4" required autocomplete="current-password">
+            </div>
+
+            <!-- Captcha Verification -->
+            <div class="captcha-section">
+                <p class="captcha-label">🔒 Captcha Verification</p>
+                <div class="captcha-display">
+                    <span id="captchaQuestion"></span>
+                    <button type="button" class="captcha-refresh" id="refreshCaptcha" title="New captcha">↻</button>
+                </div>
+                <input type="text" id="captchaInput" placeholder="Enter the answer" required autocomplete="off"
+                    style="width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:10px; font-size:0.95rem; font-family:'Inter',sans-serif; background:#f8fafc; outline:none; transition:0.3s;">
+                <p class="captcha-error" id="captchaError">❌ Incorrect captcha! Please try again.</p>
+            </div>
+
+            <button type="submit" class="form-btn" id="loginBtn">Login</button>
+
+            <div class="form-footer">
+                <a href="#">Forgot Password?</a> &nbsp;|&nbsp; <a href="signup.html">Sign Up</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toastContainer"></div>
+
+    <script>
+        let captchaAnswer;
+
+        // Generate a random math captcha
+        function generateCaptcha() {
+            const a = Math.floor(Math.random() * 10) + 1;
+            const b = Math.floor(Math.random() * 10) + 1;
+
+            // Randomly pick addition, subtraction, or multiplication
+            const ops = ['+', '-', '×'];
+            const op = ops[Math.floor(Math.random() * ops.length)];
+
+            let num1 = a, num2 = b;
+            if (op === '-' && a < b) { num1 = b; num2 = a; } // ensure positive result
+
+            switch (op) {
+                case '+': captchaAnswer = num1 + num2; break;
+                case '-': captchaAnswer = num1 - num2; break;
+                case '×': captchaAnswer = num1 * num2; break;
+            }
+
+            document.getElementById('captchaQuestion').textContent = num1 + ' ' + op + ' ' + num2 + ' = ?';
+            document.getElementById('captchaInput').value = '';
+            document.getElementById('captchaError').style.display = 'none';
+        }
+
+        // Generate captcha on page load
+        generateCaptcha();
+
+        // Refresh button
+        document.getElementById('refreshCaptcha').addEventListener('click', generateCaptcha);
+
+        // Focus styling for captcha input
+        const captchaInput = document.getElementById('captchaInput');
+        captchaInput.addEventListener('focus', () => {
+            captchaInput.style.borderColor = '#4f46e5';
+            captchaInput.style.boxShadow = '0 0 0 3px rgba(79,70,229,0.12)';
+            captchaInput.style.background = '#fff';
+        });
+        captchaInput.addEventListener('blur', () => {
+            captchaInput.style.borderColor = '#e2e8f0';
+            captchaInput.style.boxShadow = 'none';
+            captchaInput.style.background = '#f8fafc';
+        });
+
+        // Validate on form submit
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            const userAnswer = parseInt(document.getElementById('captchaInput').value, 10);
+
+            if (isNaN(userAnswer) || userAnswer !== captchaAnswer) {
+                e.preventDefault();
+                document.getElementById('captchaError').style.display = 'block';
+                generateCaptcha(); // refresh captcha on wrong answer
+
+                // Shake animation
+                const card = document.querySelector('.form-card');
+                card.style.animation = 'none';
+                card.offsetHeight; // trigger reflow
+                card.style.animation = 'shake 0.5s ease';
+                return;
+            }
+
+            // If captcha correct, show success toast before navigating
+            e.preventDefault();
+            showToast('✅ Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1500);
+        });
+
+        // Toast notification
+        function showToast(message, type) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast ' + type;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+    </script>
+
+    <style>
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(10px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+        }
+    </style>
+</body>
+
+</html>
